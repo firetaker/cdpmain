@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<dubbo:application name="client-for-cdp-app"></dubbo:application>
+	<dubbo:registry address="127.0.0.1:2181" protocol="zookeeper"></dubbo:registry>
+
+	<dubbo:reference id="videoService" interface="com.ws.cdp.cdpapi.service.VideoService"></dubbo:reference>
+	<dubbo:reference id="videoRestService" interface="com.ws.cdp.cdpapi.service.VideoRestService" retries="2" loadbalance="roundrobin"></dubbo:reference>
+	<dubbo:reference id="videoRpcService" interface="com.ws.cdp.cdpapi.service.VideoRpcService"></dubbo:reference>
+	<dubbo:reference id="videoCallbackService" interface="com.ws.cdp.cdpapi.service.VideoCallbackService" async="true"></dubbo:reference>
+</beans> 

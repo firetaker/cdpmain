@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<dubbo:application name="cdp-rest-app" owner="zhuqiang"></dubbo:application>
+	<dubbo:registry address="zookeeper://127.0.0.1:2181"></dubbo:registry>
+	<bean
+		class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
+    <!-- <dubbo:protocol name="dubbo" port="20880"></dubbo:protocol> -->
+	<!--<dubbo:protocol name="rest" port="8888" threads="500" contextpath="services" 
+		server="tomcat" accepts="500" extension="com.alibaba.dubbo.rpc.protocol.rest.support.LoggingFilter" 
+		/> -->
+	<dubbo:protocol name="rest" port="8888" keepalive="true"
+		server="netty" iothreads="5" threads="100" contextpath="services" />		
+	<!-- <dubbo:monitor address="127.0.0.1:7070"></dubbo:monitor> -->
+
+	<dubbo:service interface="com.ws.cdp.cdpapi.service.VideoService" ref="videoService" protocol="rest" validation="false" />
+	<dubbo:service interface="com.ws.cdp.cdpapi.service.VideoRestService" ref="videoRestService" protocol="rest" validation="false" />
+	
+	<dubbo:service interface="com.ws.cdp.cdpapi.service.VideoRpcService" ref="videoRpcService" protocol="dubbo" validation="false" />
+    <dubbo:service interface="com.ws.cdp.cdpapi.service.VideoCallbackService" ref="videoCallbackService" protocol="dubbo" connections="1" callbacks="1000">
+        <dubbo:method name="proceeVideo" executes="10">
+          <dubbo:argument index="1" callback="true" />
+        </dubbo:method>
+    </dubbo:service>
+	<bean id="videoService" class="com.ws.cdp.cdpprovider.service.video.VideoServiceImpl" />
+	<bean id="videoRestService" class="com.ws.cdp.cdpprovider.service.video.VideoRestServiceImpl" />
+	<bean id="videoRpcService" class="com.ws.cdp.cdpprovider.service.video.VideoRpcServiceImpl" />
+	<bean id="videoCallbackService" class="com.ws.cdp.cdpprovider.service.video.VideoCallbackServiceImpl" />
+
+</beans> 
